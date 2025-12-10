@@ -1,0 +1,160 @@
+Create an application called Budget Planner.
+
+The purpose of the app is to input a user’s monthly salary and monthly expenses, then calculate and display:
+
+Total salary
+
+Total expenses
+
+Remaining budget
+
+Percentage of income spent
+
+Simple advice based on results
+
+A graph showing expense percentage relative to income
+
+A button to download a PDF monthly report
+
+Screens and Logic
+Home Screen
+
+Title: Budget Planner
+
+Button: Start Calculation
+
+Optional button: View Reports (history)
+
+Input Screen
+
+Fields:
+
+Monthly Salary (number)
+
+Section: Monthly Expenses
+
+Button: Add Expense
+
+Each expense has:
+
+Name (text)
+
+Amount (number)
+
+Live calculations:
+
+Total Expenses
+
+Remaining Budget = Salary – Total Expenses
+
+Percentage Spent = (Total Expenses / Salary) x 100
+
+When values change, refresh calculations and chart in real time.
+
+Results Screen
+
+Display:
+
+Monthly Salary
+
+Total Expenses
+
+Remaining Budget
+
+Percentage Spent
+
+Color codes for remaining budget:
+
+Green if remaining > 25%
+
+Orange if remaining 10–25%
+
+Red if remaining < 10%
+
+Advice messages:
+
+If expenses > salary:
+
+“Your expenses are higher than your income. Reduce spending.”
+
+If remaining is healthy:
+
+“You are saving well. Keep going.”
+
+If remaining is low:
+
+“Consider reducing non-essential expenses.”
+
+Graph Requirements
+
+Generate a chart:
+
+Type: bar, pie, or donut
+
+Title: Expense % of Salary
+
+Chart shows:
+
+Salary vs Total Expenses
+
+Label the percentage spent clearly
+
+Chart updates automatically when user edits data.
+
+PDF Download
+
+Add button: Download Monthly Report (PDF)
+
+PDF must include:
+
+Month and year
+
+Salary
+
+Total expenses
+
+Remaining budget
+
+Percentage spent
+
+List of expenses with names and amounts
+
+The chart image
+
+Advice message
+
+Layout should be clean, centered and suitable for printing.
+
+Optional: let user choose a filename.
+
+Report History (optional)
+
+Store previous months in local storage or database
+
+Screen: “Past Reports”
+
+Each entry can be:
+
+Viewed on screen
+
+Downloaded as PDF again
+
+UI Requirements
+
+Clean modern layout
+
+Large numeric inputs
+
+Chart displayed clearly
+
+Buttons:
+
+Add Expense
+
+Calculate
+
+Download PDF
+
+Save Month
+
+View Reports
