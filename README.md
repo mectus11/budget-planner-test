@@ -5,11 +5,10 @@
 
 A simple budget tracker I made to help manage my monthly expenses. Nothing fancy, just tracks income and expenses with some charts to see where the money goes.
 
-````carousel
 ![Light Mode](screenshots/lightmode1.jpg)
-<!-- slide -->
+
 ![Dark Mode](screenshots/darkmode1.jpg)
-````
+
 
 ## What it does
 
@@ -21,13 +20,10 @@ A simple budget tracker I made to help manage my monthly expenses. Nothing fancy
 - Light/dark mode
 - Switch currencies (TND, USD, EUR, etc.)
 - Export to PDF
-- Works on mobile and desktop
 
-````carousel
 ![Analytics View](screenshots/lightmode2.jpg)
-<!-- slide -->
+
 ![Dark Analytics](screenshots/darkmode2.jpg)
-````
 
 ![Currency Options](screenshots/lightmodecurrency.jpg)
 
