@@ -190,6 +190,28 @@ export default function Home() {
     });
   };
 
+  const handleDeleteProfile = (profileName: string) => {
+    // Prevent deleting the active profile
+    if (profileName === activeProfile) {
+      return;
+    }
+
+    // 1. Remove from profiles list
+    const newProfiles = profiles.filter(p => p !== profileName);
+    setProfiles(newProfiles);
+
+    // 2. Delete profile data from localStorage
+    const storageKey = getStorageKey(profileName);
+    const inputsKey = getInputsKey(profileName);
+    localStorage.removeItem(storageKey);
+    localStorage.removeItem(inputsKey);
+
+    toast({
+      title: "Profile Deleted",
+      description: `${profileName} has been deleted.`,
+    });
+  };
+
 
   const budgetData: BudgetData = useMemo(() => {
     const totalExtra = extraIncome.reduce((acc, curr) => acc + curr.amount, 0);
@@ -290,6 +312,7 @@ export default function Home() {
               onSwitchProfile={setActiveProfile}
               onCreateProfile={handleCreateProfile}
               onRenameProfile={handleRenameProfile}
+              onDeleteProfile={handleDeleteProfile}
               t={t}
             />
 

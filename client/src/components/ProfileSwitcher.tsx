@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Users, Plus, User, Check, Pencil } from "lucide-react";
+import { Users, Plus, User, Check, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -26,6 +26,7 @@ interface ProfileSwitcherProps {
   onSwitchProfile: (profile: string) => void;
   onCreateProfile: (name: string) => void;
   onRenameProfile: (oldName: string, newName: string) => void;
+  onDeleteProfile: (profile: string) => void;
   t: any;
 }
 
@@ -35,13 +36,16 @@ export function ProfileSwitcher({
   onSwitchProfile,
   onCreateProfile,
   onRenameProfile,
+  onDeleteProfile,
   t,
 }: ProfileSwitcherProps) {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [newProfileName, setNewProfileName] = useState("");
   const [renameProfileName, setRenameProfileName] = useState("");
   const [profileToRename, setProfileToRename] = useState("");
+  const [profileToDelete, setProfileToDelete] = useState("");
 
   const handleCreate = () => {
     if (newProfileName.trim()) {
@@ -62,6 +66,19 @@ export function ProfileSwitcher({
     if (renameProfileName.trim() && renameProfileName !== profileToRename) {
       onRenameProfile(profileToRename, renameProfileName.trim());
       setIsRenameDialogOpen(false);
+    }
+  };
+
+  const openDeleteDialog = (e: React.MouseEvent, profile: string) => {
+    e.stopPropagation();
+    setProfileToDelete(profile);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDelete = () => {
+    if (profileToDelete && profileToDelete !== activeProfile) {
+      onDeleteProfile(profileToDelete);
+      setIsDeleteDialogOpen(false);
     }
   };
 
@@ -88,7 +105,6 @@ export function ProfileSwitcher({
                 {profile}
               </div>
               <div className="flex items-center gap-1">
-                {activeProfile === profile && <Check className="h-4 w-4" />}
                 <Button
                   variant="ghost"
                   size="icon"
@@ -97,6 +113,16 @@ export function ProfileSwitcher({
                 >
                   <Pencil className="h-3 w-3" />
                 </Button>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-destructive hover:text-destructive ${activeProfile === profile ? 'cursor-not-allowed' : ''}`}
+                  onClick={(e) => openDeleteDialog(e, profile)}
+                  disabled={activeProfile === profile}
+                >
+                  <Trash2 className="h-3 w-3" />
+                </Button>
+                {activeProfile === profile && <Check className="h-4 w-4 ml-1" />}
               </div>
             </DropdownMenuItem>
           ))}
@@ -174,6 +200,35 @@ export function ProfileSwitcher({
             </Button>
             <Button onClick={handleRename} disabled={!renameProfileName.trim() || renameProfileName === profileToRename}>
               {t.saveChanges}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t.deleteProfileTitle}</DialogTitle>
+            <DialogDescription>
+              {t.deleteProfileDesc}
+            </DialogDescription>
+          </DialogHeader>
+          {profileToDelete === activeProfile && (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 text-sm text-destructive">
+              {t.deleteProfileWarning}
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)}>
+              {t.cancel}
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={profileToDelete === activeProfile}
+            >
+              {t.deleteProfile}
             </Button>
           </DialogFooter>
         </DialogContent>

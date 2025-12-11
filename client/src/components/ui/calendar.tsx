@@ -29,7 +29,7 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn(
-        "bg-background group/calendar p-3 [--cell-size:2rem] [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
+        "bg-background group/calendar p-4 [[data-slot=card-content]_&]:bg-transparent [[data-slot=popover-content]_&]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         className
@@ -185,6 +185,60 @@ function CalendarDayButton({
     if (modifiers.focused) ref.current?.focus()
   }, [modifiers.focused])
 
+  // Get colors from modifiers
+  const incomeColors = (modifiers as any).incomeColors || []
+  const expenseColors = (modifiers as any).expenseColors || []
+
+  // Debug logging
+  if (incomeColors.length > 0 || expenseColors.length > 0) {
+    console.log('Day:', day.date.getDate(), 'Income colors:', incomeColors, 'Expense colors:', expenseColors)
+  }
+
+  // Determine background style based on colors
+  let backgroundStyle: React.CSSProperties = {}
+
+  if (incomeColors.length > 0 && expenseColors.length > 0) {
+    // Both income and expense - create a split gradient
+    const allColors = [...incomeColors, ...expenseColors]
+    if (allColors.length === 2) {
+      backgroundStyle = {
+        background: `linear-gradient(135deg, ${allColors[0]}20 0%, ${allColors[0]}20 50%, ${allColors[1]}20 50%, ${allColors[1]}20 100%)`
+      }
+    } else {
+      // Multiple colors - create a multi-stop gradient
+      const stops = allColors.map((color: string, i: number) => {
+        const start = (i / allColors.length) * 100
+        const end = ((i + 1) / allColors.length) * 100
+        return `${color}20 ${start}%, ${color}20 ${end}%`
+      }).join(', ')
+      backgroundStyle = { background: `linear-gradient(135deg, ${stops})` }
+    }
+  } else if (incomeColors.length > 0) {
+    // Only income
+    if (incomeColors.length === 1) {
+      backgroundStyle = { backgroundColor: `${incomeColors[0]}20` }
+    } else {
+      const stops = incomeColors.map((color: string, i: number) => {
+        const start = (i / incomeColors.length) * 100
+        const end = ((i + 1) / incomeColors.length) * 100
+        return `${color}20 ${start}%, ${color}20 ${end}%`
+      }).join(', ')
+      backgroundStyle = { background: `linear-gradient(135deg, ${stops})` }
+    }
+  } else if (expenseColors.length > 0) {
+    // Only expense
+    if (expenseColors.length === 1) {
+      backgroundStyle = { backgroundColor: `${expenseColors[0]}20` }
+    } else {
+      const stops = expenseColors.map((color: string, i: number) => {
+        const start = (i / expenseColors.length) * 100
+        const end = ((i + 1) / expenseColors.length) * 100
+        return `${color}20 ${start}%, ${color}20 ${end}%`
+      }).join(', ')
+      backgroundStyle = { background: `linear-gradient(135deg, ${stops})` }
+    }
+  }
+
   return (
     <Button
       ref={ref}
@@ -200,22 +254,32 @@ function CalendarDayButton({
       data-range-start={modifiers.range_start}
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
+      style={backgroundStyle}
       className={cn(
-        "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 flex aspect-square h-auto w-full min-w-[--cell-size] flex-col gap-1 font-normal leading-none data-[range-end=true]:rounded-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] [&>span]:text-xs [&>span]:opacity-70 relative",
+        "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50",
+        "flex aspect-square h-auto w-full min-w-[--cell-size] flex-col gap-1 font-normal leading-none relative",
+        "rounded-lg hover:bg-accent/50 transition-colors duration-200",
+        "data-[range-end=true]:rounded-lg data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-lg",
+        "group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-2 group-data-[focused=true]/day:ring-ring",
+        "border border-transparent hover:border-border/50",
         defaultClassNames.day,
         className
       )}
       {...props}
     >
-      <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">{day.date.getDate()}</span>
-      <div className="absolute bottom-1 flex gap-0.5">
-        {modifiers.hasIncome && (
-          <div className="h-1 w-1 rounded-full bg-success" />
-        )}
-        {modifiers.hasExpense && (
-          <div className="h-1 w-1 rounded-full bg-destructive" />
-        )}
-      </div>
+      <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-medium z-10">{day.date.getDate()}</span>
+
+      {/* Color indicators at the bottom */}
+      {(incomeColors.length > 0 || expenseColors.length > 0) && (
+        <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-0.5">
+          {incomeColors.slice(0, 3).map((color: string, i: number) => (
+            <div key={`income-${i}`} className="h-1 w-1 rounded-full" style={{ backgroundColor: color }} />
+          ))}
+          {expenseColors.slice(0, 3).map((color: string, i: number) => (
+            <div key={`expense-${i}`} className="h-1 w-1 rounded-full" style={{ backgroundColor: color }} />
+          ))}
+        </div>
+      )}
     </Button>
   )
 }

@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
+import { Calendar, CalendarDayButton } from "@/components/ui/calendar";
 import { Expense, IncomeItem } from "@/types/budget";
 import { v4 as uuidv4 } from "uuid";
 import { format } from "date-fns";
@@ -163,14 +163,14 @@ export function ExpenseForm({
                   {month ? format(month, "MMMM yyyy") : <span>{t.pickMonth}</span>}
                 </Button>
               </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
+              <PopoverContent className="w-auto p-0 min-w-[450px]" align="start">
                 <Calendar
                   mode="single"
                   selected={month}
                   onSelect={(date) => date && setMonth(date)}
                   initialFocus
                   defaultMonth={month}
-                  className="[--cell-size:3rem]"
+                  style={{ '--cell-size': '4rem' } as React.CSSProperties}
                   modifiers={{
                     hasIncome: extraIncome
                       .filter(i => i.date)
@@ -179,6 +179,33 @@ export function ExpenseForm({
                       .filter(e => e.date)
                       .map(e => new Date(e.date!)),
                   }}
+                  components={{
+                    DayButton: (props: any) => {
+                      const dateStr = props.day.date.toDateString()
+
+                      // Get colors for this specific date
+                      const incomeColors = extraIncome
+                        .filter(i => i.date && new Date(i.date).toDateString() === dateStr)
+                        .map(i => i.color)
+                        .filter(Boolean) as string[]
+
+                      const expenseColors = expenses
+                        .filter(e => e.date && new Date(e.date).toDateString() === dateStr)
+                        .map(e => e.color)
+                        .filter(Boolean) as string[]
+
+                      return (
+                        <CalendarDayButton
+                          {...props}
+                          modifiers={{
+                            ...props.modifiers,
+                            incomeColors,
+                            expenseColors,
+                          }}
+                        />
+                      )
+                    },
+                  } as any}
                 />
               </PopoverContent>
             </Popover>
@@ -221,8 +248,8 @@ export function ExpenseForm({
           <div className="space-y-4">
             <Label className="text-muted-foreground font-medium">{t.extraIncome}</Label>
             <form onSubmit={handleAddIncome} className="space-y-3 p-4 border border-border/50 rounded-lg bg-card/50">
-              <div className="flex gap-3 items-end">
-                <div className="flex-1 space-y-2">
+              <div className="flex gap-3 items-end flex-wrap">
+                <div className="flex-1 flex flex-col gap-2 min-w-[200px]">
                   <Label className="text-xs text-muted-foreground">{editingIncomeId ? 'Edit Name' : 'Name'}</Label>
                   <Input
                     value={newIncomeName}
@@ -230,7 +257,7 @@ export function ExpenseForm({
                     placeholder={t.sourcePlaceholder}
                   />
                 </div>
-                <div className="w-32 space-y-2">
+                <div className="w-32 flex flex-col gap-2">
                   <Label className="text-xs text-muted-foreground">{editingIncomeId ? 'Edit Amount' : 'Amount'}</Label>
                   <Input
                     type="number"
@@ -239,7 +266,7 @@ export function ExpenseForm({
                     placeholder={t.amountPlaceholder}
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="flex flex-col gap-2">
                   <Label className="text-xs text-muted-foreground">Date</Label>
                   <Popover>
                     <PopoverTrigger asChild>
@@ -254,12 +281,13 @@ export function ExpenseForm({
                         {newIncomeDate ? format(newIncomeDate, "PP") : <span>Pick date</span>}
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
+                    <PopoverContent className="w-auto p-0 min-w-[350px]">
                       <Calendar
                         mode="single"
                         selected={newIncomeDate}
                         onSelect={setNewIncomeDate}
                         initialFocus
+                        style={{ '--cell-size': '3.5rem' } as React.CSSProperties}
                       />
                     </PopoverContent>
                   </Popover>
@@ -356,8 +384,8 @@ export function ExpenseForm({
         </CardHeader>
         <CardContent className="space-y-6">
           <form onSubmit={handleAddExpense} className="space-y-3 p-4 border border-border/50 rounded-lg bg-card/50">
-            <div className="flex gap-3 items-end">
-              <div className="flex-1 space-y-2">
+            <div className="flex gap-3 items-end flex-wrap">
+              <div className="flex-1 flex flex-col gap-2 min-w-[200px]">
                 <Label className="text-xs text-muted-foreground">{editingExpenseId ? 'Edit Name' : 'Name'}</Label>
                 <Input
                   value={newExpenseName}
@@ -365,7 +393,7 @@ export function ExpenseForm({
                   placeholder={t.expenseNamePlaceholder}
                 />
               </div>
-              <div className="w-32 space-y-2">
+              <div className="w-32 flex flex-col gap-2">
                 <Label className="text-xs text-muted-foreground">{editingExpenseId ? 'Edit Amount' : 'Amount'}</Label>
                 <Input
                   type="number"
@@ -374,7 +402,7 @@ export function ExpenseForm({
                   placeholder={t.amountPlaceholder}
                 />
               </div>
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2">
                 <Label className="text-xs text-muted-foreground">Date</Label>
                 <Popover>
                   <PopoverTrigger asChild>
@@ -389,12 +417,13 @@ export function ExpenseForm({
                       {newExpenseDate ? format(newExpenseDate, "PP") : <span>Pick date</span>}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="end">
+                  <PopoverContent className="w-auto p-0 min-w-[350px]" align="end">
                     <Calendar
                       mode="single"
                       selected={newExpenseDate}
                       onSelect={setNewExpenseDate}
                       initialFocus
+                      style={{ '--cell-size': '3.5rem' } as React.CSSProperties}
                     />
                   </PopoverContent>
                 </Popover>
