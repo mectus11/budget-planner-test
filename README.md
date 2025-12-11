@@ -40,17 +40,10 @@ A simple budget tracker I made to help manage my monthly expenses. Nothing fancy
 You can run this on your own machine, a virtual machine, or even a local home server. Everything runs locally - no cloud services needed.
 
 **Requirements:**
-- Node.js (v14 or higher)
-- npm
-
-**Setup:**
-
-```bash
-git clone https://github.com/mectus11/budget-planner-test.git
-cd budget-planner-test
-npm install
-npm run dev
-```
+See [DEPLOY.md](DEPLOY.md) for detailed instructions on:
+- **Docker** (Recommended)
+- **Linux** (Debian/Ubuntu Systemd service)
+- **Local Development**
 
 Then go to `http://localhost:5000` in your browser.
 

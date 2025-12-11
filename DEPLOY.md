@@ -1,75 +1,120 @@
-# Local Development & Deployment Guide
+# Deployment Guide
 
-This guide explains how to run the Budget Planner application on your local machine for development or deployment.
+This guide covers how to deploy the Budget Planner application in three ways:
+1.  [**Docker**](#option-1-docker-deployment-recommended) (Recommended, easiest)
+2.  [**Linux (Debian/Ubuntu)**](#option-2-linux-server-manual-debianubuntu) (Manual service setup)
+3.  [**Local Development**](#option-3-local-development) (For coding and testing)
 
-## Prerequisites
+---
 
-Before you begin, ensure you have the following installed:
-- **Node.js**: Version 20 or higher (LTS recommended)
-- **npm**: Installed automatically with Node.js
-- **Git**: To clone the repository
+## Option 1: Docker Deployment (Recommended)
 
-## Quick Start (Local Development)
+This method works on any system with Docker installed (Linux, Windows, Mac).
 
-Follow these steps to run the application in development mode with hot-reloading:
+### 1. Prerequisites
+- Docker & Docker Compose installed on your host machine.
 
-1.  **Clone the Repository**
-    ```bash
-    git clone <your-repository-url>
-    cd <repository-directory>
-    ```
+### 2. Quick Start
+Run the following cmd in the project root:
 
-2.  **Install Dependencies**
-    ```bash
-    npm install
-    ```
+```bash
+docker-compose up -d --build
+```
 
-3.  **Start the Development Server**
-    ```bash
-    npm run dev
-    ```
-    The application will be available at `http://localhost:5000`.
+That's it! Access the app at `http://YOUR_SERVER_IP:5000`.
 
-## Production Deployment (Local Server)
+### 3. Managing the Container
+- **Stop**: `docker-compose down`
+- **View Logs**: `docker-compose logs -f`
+- **Restart**: `docker-compose restart`
 
-To run the optimized production build on your local server:
+---
 
-1.  **Build the Application**
-    Compiles the React frontend and server code.
-    ```bash
-    npm run build
-    ```
+## Option 2: Linux Server Manual (Debian/Ubuntu)
 
-2.  **Start the Production Server**
-    Runs the Node.js server with the built assets.
-    ```bash
-    npm start
-    ```
-    The application will be available at `http://localhost:5000` (or the port specified in your environment).
+Use this method if you want to run the app natively as a system service.
 
-    *Note: To run on a specific port:*
-    ```bash
-    PORT=3000 npm start
-    ```
+### 1. Install Requirements
+Update your system and install Node.js (v20+):
 
-## Static Deployment (Frontend Only)
+```bash
+# Update system
+sudo apt update && sudo apt upgrade -y
 
-If you only want to serve the frontend files using a static web server (like Nginx, Apache, or Python's http.server):
+# Install Node.js (Official script)
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+sudo apt install -y nodejs
 
-1.  **Build the Project**
-    ```bash
-    npm run build
-    ```
+# Verify installation
+node -v
+npm -v
+```
 
-2.  **Locate Static Files**
-    The built frontend files are located in the `dist/public/` directory.
+### 2. Clone & Build
+Clone the project to your preferred directory (e.g., `/opt/budget-planner` or your home folder):
 
-3.  **Serve the Files**
-    You can point any web server to the `dist/public/` directory.
+```bash
+git clone https://github.com/mectus11/budget-planner-test.git
+cd budget-planner-test
 
-    *Example using Python (for testing):*
-    ```bash
-    cd dist/public
-    python3 -m http.server 8000
-    ```
-    Then visit `http://localhost:8000`.
+# Install dependencies and build
+npm ci
+npm run build
+```
+
+### 3. Setup Systemd Service
+Create a service file to keep the app running in the background and restart on boot.
+
+Create the file:
+```bash
+sudo nano /etc/systemd/system/budget-planner.service
+```
+
+Paste the following configuration (change `User` and `WorkingDirectory` to match yours):
+
+```ini
+[Unit]
+Description=Budget Planner Service
+After=network.target
+
+[Service]
+# CHANGE THESE TO YOUR USER AND PATH:
+User=your_username
+WorkingDirectory=/home/your_username/budget-planner-test
+# ------------------------------------
+
+ExecStart=/usr/bin/npm start
+Restart=always
+Environment=NODE_ENV=production
+Environment=PORT=5000
+
+[Install]
+WantedBy=multi-user.target
+```
+
+### 4. Enable and Start
+```bash
+# Reload systemd to verify the new file
+sudo systemctl daemon-reload
+
+# Start the service
+sudo systemctl start budget-planner
+
+# Enable it to start on boot
+sudo systemctl enable budget-planner
+
+# Check status
+sudo systemctl status budget-planner
+```
+
+Your app is now running on port 5000.
+
+---
+
+## Option 3: Local Development
+
+For developing features or running locally on your PC.
+
+1.  **Install**: `npm install`
+2.  **Run Dev Server**: `npm run dev`
+3.  **App URL**: `http://localhost:5000`
