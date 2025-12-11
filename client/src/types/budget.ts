@@ -3,6 +3,7 @@ export interface IncomeItem {
   name: string;
   amount: number;
   color?: string;
+  date?: string;
 }
 
 export interface Expense {
@@ -10,6 +11,7 @@ export interface Expense {
   name: string;
   amount: number;
   color?: string;
+  date?: string;
 }
 
 export interface BudgetData {

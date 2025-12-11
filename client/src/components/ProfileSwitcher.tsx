@@ -69,7 +69,7 @@ export function ProfileSwitcher({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-2">
+          <Button variant="outline" className="gap-2">
             <Users className="h-4 w-4" />
             <span className="hidden sm:inline-block">{activeProfile}</span>
           </Button>
@@ -88,15 +88,15 @@ export function ProfileSwitcher({
                 {profile}
               </div>
               <div className="flex items-center gap-1">
-                 {activeProfile === profile && <Check className="h-4 w-4" />}
-                 <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
-                    onClick={(e) => openRenameDialog(e, profile)}
-                 >
-                    <Pencil className="h-3 w-3" />
-                 </Button>
+                {activeProfile === profile && <Check className="h-4 w-4" />}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                  onClick={(e) => openRenameDialog(e, profile)}
+                >
+                  <Pencil className="h-3 w-3" />
+                </Button>
               </div>
             </DropdownMenuItem>
           ))}
@@ -173,7 +173,7 @@ export function ProfileSwitcher({
               {t.cancel}
             </Button>
             <Button onClick={handleRename} disabled={!renameProfileName.trim() || renameProfileName === profileToRename}>
-                {t.saveChanges}
+              {t.saveChanges}
             </Button>
           </DialogFooter>
         </DialogContent>
