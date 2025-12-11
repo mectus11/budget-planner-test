@@ -6,6 +6,7 @@ import { BudgetData } from "@/types/budget";
 import { generatePDF } from "@/lib/pdfGenerator";
 import { cn, formatAmount } from "@/lib/utils";
 import html2canvas from "html2canvas";
+import { MonthlyChart } from "./MonthlyChart";
 
 interface ResultsSummaryProps {
   data: BudgetData;
@@ -21,25 +22,64 @@ export function ResultsSummary({ data, chartRef, t, currency }: ResultsSummaryPr
   const isWarning = percentageSpent > 75 && percentageSpent <= 90;
   const isDanger = percentageSpent > 90;
 
-  let advice = "";
-  let statusColor = "text-foreground";
-  let progressColor = "bg-primary";
+  const getFinancialAdvice = () => {
+    if (totalIncome === 0) return { text: t.advice.start, status: "text-foreground", progress: "bg-primary" };
 
-  if (totalIncome === 0) {
-    advice = t.advice.start;
-  } else if (remainingBudget < 0) {
-    advice = t.advice.overBudget;
-    statusColor = "text-destructive";
-    progressColor = "bg-destructive";
-  } else if (isDanger) {
-    advice = t.advice.danger;
-    statusColor = "text-warning";
-    progressColor = "bg-warning";
-  } else {
-    advice = t.advice.good;
-    statusColor = "text-success";
-    progressColor = "bg-success";
-  }
+    const formatParams = (text: string) => {
+      return text
+        .replace("{amount}", `${formatAmount(Math.abs(remainingBudget))} ${currency}`)
+        .replace("{percent}", percentageSpent.toFixed(1));
+    };
+
+    if (remainingBudget < 0) {
+      return {
+        text: formatParams(t.advice.critical.negative),
+        status: "text-destructive",
+        progress: "bg-destructive"
+      };
+    }
+
+    if (percentageSpent > 90) {
+      return {
+        text: formatParams(t.advice.critical.danger),
+        status: "text-destructive",
+        progress: "bg-destructive"
+      };
+    }
+
+    if (percentageSpent > 75) {
+      return {
+        text: formatParams(t.advice.warning.high),
+        status: "text-warning",
+        progress: "bg-warning"
+      };
+    }
+
+    if (percentageSpent > 50) {
+      return {
+        text: formatParams(t.advice.neutral.solid),
+        status: "text-foreground",
+        progress: "bg-primary"
+      };
+    }
+
+    if (percentageSpent > 25) {
+      return {
+        text: formatParams(t.advice.good.track),
+        status: "text-success",
+        progress: "bg-success"
+      };
+    }
+
+    // Excellent / High Savings
+    return {
+      text: formatParams(t.advice.excellent.wealth),
+      status: "text-success",
+      progress: "bg-success"
+    };
+  };
+
+  const { text: advice, status: statusColor, progress: progressColor } = getFinancialAdvice();
 
   const handleDownload = async () => {
     let chartImage = undefined;
@@ -62,7 +102,7 @@ export function ResultsSummary({ data, chartRef, t, currency }: ResultsSummaryPr
             <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{t.totalExpenses}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold font-display">{formatAmount(totalExpenses)} {currency}</div>
+            <div className="text-2xl font-bold font-display whitespace-nowrap">{formatAmount(totalExpenses)} {currency}</div>
           </CardContent>
         </Card>
 
@@ -71,7 +111,7 @@ export function ResultsSummary({ data, chartRef, t, currency }: ResultsSummaryPr
             <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{t.remaining}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className={cn("text-2xl font-bold font-display", statusColor)}>
+            <div className={cn("text-2xl font-bold font-display whitespace-nowrap", statusColor)}>
               {formatAmount(remainingBudget)} {currency}
             </div>
           </CardContent>
@@ -82,12 +122,14 @@ export function ResultsSummary({ data, chartRef, t, currency }: ResultsSummaryPr
             <CardTitle className="text-sm font-medium text-muted-foreground uppercase tracking-wider">{t.percentSpent}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className={cn("text-2xl font-bold font-display", statusColor)}>
+            <div className={cn("text-2xl font-bold font-display whitespace-nowrap", statusColor)}>
               {percentageSpent.toFixed(1)}%
             </div>
           </CardContent>
         </Card>
       </div>
+
+      <MonthlyChart data={data} currency={currency} t={t} />
 
       <Card className="border-border/50 shadow-sm bg-muted/20">
         <CardContent className="pt-6">

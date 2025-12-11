@@ -37,9 +37,26 @@ export const translations = {
     addIncomeToSee: "Add income and expenses to see the breakdown.",
     advice: {
       start: "Enter your income to get started.",
-      overBudget: "Your expenses are higher than your income. Reduce spending immediately.",
-      danger: "Consider reducing non-essential expenses. You are close to your limit.",
-      good: "You are saving well. Keep going!",
+      critical: {
+        negative: "Warning: You are {amount} over budget! Cut non-essential spending immediately.",
+        danger: "Critical: You've spent {percent}% of your income. You only have {amount} left.",
+      },
+      warning: {
+        high: "Careful: You have used {percent}% of your budget. Consider slowing down.",
+        monitor: "Keep an eye on your spending. You have {amount} remaining for the rest of the month.",
+      },
+      neutral: {
+        balanced: "You are on track. {amount} remaining.",
+        solid: "Steady spending. You have used {percent}% of your income.",
+      },
+      good: {
+        saving: "Great job! You have saved {amount} so far.",
+        track: "You are managing your money well. {percent}% spent.",
+      },
+      excellent: {
+        wealth: "Excellent financial health! You still have {percent}% of your income available.",
+        invest: "Amazing! You have {amount} surplus. Consider investing or adding to emergency funds.",
+      }
     },
     switchProfile: "Switch Profile",
     createProfile: "Create Profile",
@@ -56,6 +73,14 @@ export const translations = {
     deleteProfileWarning: "You cannot delete the currently active profile.",
     profileExists: "Profile already exists.",
     items: "Items",
+    createdBy: "Created by",
+    personalProject: "Personal Project",
+    rightsReserved: "All rights reserved",
+    headerCredit: "by Fadi Albouchi",
+    spendingHabits: "Spending Habits (Cumulative)",
+    totalIncomeChart: "Total Income",
+    totalSpentChart: "Total Spent",
+    day: "Day",
   },
   fr: {
     appTitle: "Planificateur de Budget",
@@ -95,9 +120,26 @@ export const translations = {
     addIncomeToSee: "Ajoutez des revenus et dépenses pour voir la répartition.",
     advice: {
       start: "Entrez vos revenus pour commencer.",
-      overBudget: "Vos dépenses dépassent vos revenus. Réduisez vos dépenses immédiatement.",
-      danger: "Envisagez de réduire les dépenses non essentielles. Vous êtes proche de la limite.",
-      good: "Vous épargnez bien. Continuez comme ça !",
+      critical: {
+        negative: "Attention : Vous dépassez le budget de {amount} ! Réduisez les dépenses immédiatement.",
+        danger: "Critique : Vous avez dépensé {percent}% de votre revenu. Il ne vous reste que {amount}.",
+      },
+      warning: {
+        high: "Attention : Vous avez utilisé {percent}% de votre budget. Réduisez la cadence.",
+        monitor: "Surveillez vos dépenses. Il vous reste {amount} pour le reste du mois.",
+      },
+      neutral: {
+        balanced: "Vous êtes sur la bonne voie. {amount} restants.",
+        solid: "Dépenses stables. Vous avez utilisé {percent}% de votre revenu.",
+      },
+      good: {
+        saving: "Beau travail ! Vous avez économisé {amount} jusqu'à présent.",
+        track: "Vous gérez bien votre argent. {percent}% dépensés.",
+      },
+      excellent: {
+        wealth: "Excellente santé financière ! Vous avez encore {percent}% de votre revenu disponible.",
+        invest: "Incroyable ! Vous avez un surplus de {amount}. Pensez à investir ou épargner.",
+      }
     },
     switchProfile: "Changer de Profil",
     createProfile: "Créer un Profil",
@@ -114,6 +156,14 @@ export const translations = {
     deleteProfileWarning: "Vous ne pouvez pas supprimer le profil actuellement actif.",
     profileExists: "Ce profil existe déjà.",
     items: "Éléments",
+    createdBy: "Créé par",
+    personalProject: "Projet Personnel",
+    rightsReserved: "Tous droits réservés",
+    headerCredit: "par Fadi Albouchi",
+    spendingHabits: "Habitudes de dépense (Cumulatif)",
+    totalIncomeChart: "Revenu Total",
+    totalSpentChart: "Total Dépensé",
+    day: "Jour",
   }
 };
 
