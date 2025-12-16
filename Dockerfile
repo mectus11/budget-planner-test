@@ -17,7 +17,7 @@ RUN apk add --no-cache python3 make g++
 COPY package*.json ./
 
 # Install all dependencies (including devDependencies for build)
-RUN npm install
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -48,15 +48,14 @@ ENV NODE_OPTIONS="--max-old-space-size=512"
 # Install dumb-init to handle signals properly
 RUN apk add --no-cache dumb-init
 
-# Copy necessary files from builder stage
-COPY --from=builder /app/package.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/dist ./dist
-
 # Create non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
-  adduser -S nodejs -u 1001 && \
-  chown -R nodejs:nodejs /app
+  adduser -S nodejs -u 1001
+
+# Copy necessary files from builder stage
+COPY --from=builder --chown=nodejs:nodejs /app/package.json ./
+COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 
 # Switch to non-root user
 USER nodejs
