@@ -17,7 +17,7 @@ RUN apk add --no-cache python3 make g++
 COPY package*.json ./
 
 # Install all dependencies (including devDependencies for build)
-RUN npm install
+RUN rm package-lock.json && npm install
 
 # Copy source code
 COPY . .
