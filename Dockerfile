@@ -26,7 +26,7 @@ COPY . .
 RUN npm run build
 
 # Remove development dependencies to reduce image size
-RUN npm prune --production
+RUN rm -rf node_modules package-lock.json && npm install --omit=dev
 
 # ============================================
 # Production Stage
