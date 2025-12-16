@@ -1,7 +1,7 @@
 # ============================================
 # Build Stage
 # ============================================
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Add metadata labels
 LABEL maintainer="Budget Planner"
@@ -17,7 +17,7 @@ RUN apk add --no-cache python3 make g++
 COPY package*.json ./
 
 # Install all dependencies (including devDependencies for build)
-RUN npm install -g npm@latest && npm ci
+RUN npm ci
 
 # Copy source code
 COPY . .
@@ -31,7 +31,7 @@ RUN npm prune --production
 # ============================================
 # Production Stage
 # ============================================
-FROM node:20-alpine AS runner
+FROM node:22-alpine AS runner
 
 # Add metadata labels
 LABEL maintainer="Budget Planner"
