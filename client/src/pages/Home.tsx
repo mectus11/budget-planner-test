@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react";
-import { History, ChevronRight, Languages, Trash2 } from "lucide-react";
+import { History, ChevronRight, Languages, Trash2, Wallet } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ExpenseForm } from "@/components/ExpenseForm";
 import { ResultsSummary } from "@/components/ResultsSummary";
@@ -288,18 +288,20 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-muted/30 pb-20">
+    <div className="min-h-screen bg-muted/30 flex flex-col">
       <header className="bg-background border-b border-border/50 sticky top-0 z-10 backdrop-blur-md bg-background/80">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 bg-transparent rounded flex items-center justify-center">
-              <img
-                src="/logo-transparent.png"
-                alt="Logo"
-                className="w-full h-full object-contain"
-              />
+              <Wallet className="w-full h-full text-primary" />
             </div>
-            <span className="font-display font-bold text-xl tracking-tight">{t.appTitle}</span>
+            <div className="flex flex-col sm:flex-row sm:items-baseline gap-0 sm:gap-2">
+              <span className="font-display font-bold text-xl tracking-tight">
+                <span className="text-primary">{t.appTitle.charAt(0)}</span>
+                {t.appTitle.slice(1)}
+              </span>
+              <span className="text-xs text-muted-foreground font-medium">{t.headerCredit}</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -395,6 +397,24 @@ export default function Home() {
           </div>
         </div>
       </main>
+      <footer className="border-t border-border/50 bg-background/50 backdrop-blur-sm py-6 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 text-center text-sm text-muted-foreground space-y-1">
+          <p>
+            {t.createdBy}{" "}
+            <a
+              href="https://www.linkedin.com/in/fadi-albouchi-183b817b/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-primary hover:underline transition-colors"
+            >
+              Fadi Albouchi
+            </a>
+          </p>
+          <p className="text-xs opacity-70">
+            &copy; {new Date().getFullYear()} Budget Planner. {t.personalProject}. {t.rightsReserved}.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

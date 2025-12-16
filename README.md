@@ -35,13 +35,30 @@ A simple budget tracker I made to help manage my monthly expenses. Nothing fancy
 
 You can run this on your own machine, a virtual machine, or even a local home server. Everything runs locally - no cloud services needed.
 
-**Requirements:**
-See [DEPLOY.md](DEPLOY.md) for detailed instructions on:
-- **Docker** (Recommended)
-- **Linux** (Debian/Ubuntu Systemd service)
-- **Local Development**
+### Quick Start
+
+**Using Docker (Recommended):**
+```bash
+docker compose up -d --build
+```
+
+**Without Docker:**
+```bash
+npm install
+npm run dev
+```
 
 Then go to `http://localhost:5000` in your browser.
+
+### 📖 Installation Guides
+
+- **[QUICKSTART.md](QUICKSTART.md)** - Quick reference for common commands
+- **[INSTALL.md](INSTALL.md)** - Comprehensive installation guide for all platforms
+  - Docker installation (Windows, macOS, Linux)
+  - Direct installation (Windows, macOS, Linux)
+  - Running as a system service
+  - Troubleshooting
+- **[DEPLOY.md](DEPLOY.md)** - Production deployment options
 
 ## Privacy
 
